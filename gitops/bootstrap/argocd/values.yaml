@@ -1,0 +1,12 @@
+# Argo CD server configuration
+configs:
+  params:
+    server.insecure: true
+
+# Argo CD server service
+server:
+  service:
+    type: ClusterIP
+
+  ingress:
+    enabled: false

@@ -1,0 +1,32 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+!*.example.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terragrunt
+.terragrunt-cache/
+
+# Kubernetes
+*.kubeconfig
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+
+# Local files
+.DS_Store
+Thumbs.db
+*.log
+    

@@ -1,0 +1,99 @@
+k3d cluster list
+k3d cluster create <name>	
+k3d cluster delete <name>	
+k3d cluster start <name>	
+k3d cluster stop <name>	
+k3d cluster get <name>	
+k3d node list	
+
+kubectl config get-contexts
+kubectl config current-context
+kubectl config use-context <context-name>
+kubectl config view
+kubectl config view --minify
+kubectl config delete-context <context-name>
+kubectl cluster-info
+
+docker ps -a
+~/.kube/config
+
+k3d cluster create --config infra/k3s/cluster.yaml
+
+## Helm
+
+### Important Concepts
+
+- Chart: Package containing Kubernetes templates and configuration.
+- Release: An installed instance of a Helm chart.
+- values.yaml: Configuration values used by chart templates.
+- Repository: Location where Helm charts are published.
+- Templates: Generate Kubernetes manifests from chart configuration.
+
+### Repository Management
+
+| Command | Description |
+|---|---|
+| helm repo add | Add repository |
+| helm repo list | List repositories |
+| helm repo update | Update repository metadata |
+| helm search repo | Search charts |
+
+### Release Management
+
+| Command | Description |
+|---|---|
+| helm install | Install chart |
+| helm list -A | List releases |
+| helm upgrade | Upgrade release |
+| helm rollback | Rollback release |
+| helm uninstall | Remove release |
+| helm get values | Inspect release configuration |
+| helm get manifest | Inspect generated manifests |
+| helm template | Render manifests locally |
+
+helm repo add argo https://argoproj.github.io/argo-helm
+
+helm pull argo/argo-cd \
+  --version 10.18.0 \
+  --untar \
+  --untardir charts
+
+helm lint ./charts/argo-cd \
+  --values gitops/bootstrap/argocd/values.yaml
+
+helm template argocd ./charts/argo-cd \
+  --namespace argocd \
+  --values gitops/bootstrap/argocd/values.yaml \
+  --include-crds > /tmp/argocd-rendered.yaml
+
+helm upgrade --install argocd ./charts/argo-cd \
+  --namespace argocd \
+  --create-namespace \
+  --values gitops/bootstrap/argocd/values.yaml \
+  --wait \
+  --timeout 5m
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+
+helm repo add jetstack https://charts.jetstack.io
+
+helm pull jetstack/cert-manager \
+  --version v1.21.3 \
+  --untar \
+  --untardir charts
+
+helm lint ./charts/cert-manager \
+  --values gitops/infra/cert-manager/values.yaml
+
+helm template cert-manager ./charts/cert-manager \
+  --namespace cert-manager \
+  --values gitops/infra/cert-manager/values.yaml \
+  --include-crds > /tmp/cert-manager-rendered.yaml
+
+helm upgrade --install cert-manager ./charts/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --values gitops/infra/cert-manager/values.yaml \
+  --wait \
+  --timeout 5m
