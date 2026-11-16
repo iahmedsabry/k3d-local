@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: selfsigned-issuer
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/iahmedsabry/k3d-local.git
+    targetRevision: main
+    path: gitops/infra/selfsigned-issuer
+    directory:
+      include: 'selfsigned-issuer.yaml'
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
