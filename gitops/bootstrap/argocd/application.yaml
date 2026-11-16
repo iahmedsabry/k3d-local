@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://github.com/iahmedsabry/k3d-local.git
+      targetRevision: main
+      path: charts/argo-cd
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/gitops/bootstrap/argocd/values.yaml
+
+    - repoURL: https://github.com/iahmedsabry/k3d-local.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
